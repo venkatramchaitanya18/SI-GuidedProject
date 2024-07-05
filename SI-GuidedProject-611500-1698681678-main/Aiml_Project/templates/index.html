@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fetal Health Prediction</title>
+    <style>
+      h1 , h2 {
+        color: rgb(237, 21, 90);
+      }
+
+      .navcontainer {
+        height: max-content;
+        background-color: rgb(40, 40, 40);
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        position: fixed;
+        top: 0;
+      }
+      .butcontainer {
+        display: flex;
+        gap: 10px;
+      }
+      input {
+        width: 290 px;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-size: cover;
+        background-color: rgb(22, 22, 22);
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+          sans-serif;
+        background-repeat: no-repeat;
+        color: white;
+        padding-top: 70px; /* Add padding for the fixed navbar */
+      }
+
+      .form-container {
+        border: 2px solid #ccc;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 70px; /* Add margin to create space at the top */
+      }
+      #submit-button {
+        background-color: rgb(237, 21, 90);
+        height: 40px;
+        width: 250px;
+        border-radius: 3px;
+        margin-top: 2rem;
+        color: white;
+      }
+      a {
+        border: 1px solid white;
+        padding: 10px;
+        background-color: rgb(237, 21, 90);
+        color: white;
+        border-radius: 9px;
+        text-decoration: none;
+      }
+      .megacontainer {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        
+        justify-content: space-evenly;
+      }
+      img {
+        width: 400px;
+        border: 2px solid white; /* Add a white border */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add a subtle box shadow */
+        background-color: rgb(22, 22, 22); /* Match background color of body */
+        margin: 0; /* Remove margin */
+        padding: 0; /* Remove padding */
+        border-radius: 10px;
+      }
+      .contentcontainer {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-right: 7rem;
+       
+       
+      }
+   
+
+      .typing-container {
+        font-size: 36px;
+        font-weight: bold;
+        font-family: monospace;
+        white-space: nowrap;
+        overflow: hidden;
+        border-right: 0.08em solid white; /* Blinking cursor */
+      }
+      @media (max-width: 1668px) {
+      .contentcontainer{
+        margin-top: 500px; /* Adjust the margin-top value as needed */
+      }
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="navcontainer">
+      <h1>Fetal Health Predictor</h1>
+      <div class="butcontainer">
+        <a href="/">Login</a>
+
+        <a href="/about">AboutUs</a>
+      </div>
+    </div>
+
+    <div class="megacontainer">
+      <div class="contentcontainer">
+        <img src="{{ url_for('static', filename='content-image.jpg') }}" alt="Example Image">
+        <h1 class="typing-container"></h1>
+        <div class="paracontainer">
+            <p>"Discover the health of your unborn child with our advanced fetal health predictor. Get accurate results in seconds!"</p>
+            <p>"Monitor your baby's well-being with our state-of-the-art technology. Take the first step towards a healthy pregnancy journey."</p>
+            <p>"Empowering parents with reliable fetal health insights. Trust in our expertise for a safe and secure pregnancy experience."</p>
+        </div>
+        <div>
+          <h2>Prediction Result:</h2>
+          {% if result %}
+              <p style="color: {% if result == 'Normal' %} green {% elif result == 'Suspect' %} orange {% elif result == 'Pathological' %} red {% endif %}; font-size: 2rem; font-style:bold;">{{ result }}</p>
+          {% else %}
+              <p>No prediction result available</p>
+          {% endif %}
+      </div>
+      
+        
+      </div>
+
+      <div class="form-container">
+        <form action="/predict" method="post">
+          <table>
+            <tr>
+              <td><label for="baseline_value">Baseline Value:</label></td>
+              <td>
+                <input
+                  type="text"
+                  id="baseline_value"
+                  name="baseline_value"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td><label for="accelerations">Accelerations:</label></td>
+              <td>
+                <input
+                  type="text"
+                  id="accelerations"
+                  name="accelerations"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td><label for="fetal_movement">Fetal Movement:</label></td>
+              <td>
+                <input
+                  type="text"
+                  id="fetal_movement"
+                  name="fetal_movement"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="uterine_contractions">Uterine Contractions:</label>
+              </td>
+              <td>
+                <input
+                  type="text"
+                  id="uterine_contractions"
+                  name="uterine_contractions"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="light_decelerations">Light Decelerations:</label>
+              </td>
+              <td>
+                <input
+                  type="text"
+                  id="light_decelerations"
+                  name="light_decelerations"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="severe_decelerations">Severe Decelerations:</label>
+              </td>
+              <td>
+                <input
+                  type="text"
+                  id="severe_decelerations"
+                  name="severe_decelerations"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="prolongued_decelerations"
+                  >Prolongued Decelerations:</label
+                >
+              </td>
+              <td>
+                <input
+                  type="text"
+                  id="prolongued_decelerations"
+                  name="prolongued_decelerations"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="abnormal_short_term_variability"
+                  >Abnormal Short Term Variability:</label
+                >
+              </td>
+              <td>
+                <input
+                  type="text"
+                  id="abnormal_short_term_variability"
+                  name="abnormal_short_term_variability"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="mean_value_of_short_term_variability"
+                  >Mean Value of Short Term Variability:</label
+                >
+              </td>
+              <td>
+                <input
+                  type="text"
+                  id="mean_value_of_short_term_variability"
+                  name="mean_value_of_short_term_variability"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label
+                  for="percentage_of_time_with_abnormal_long_term_variability"
+                  >Percentage of Time with Abnormal Long Term
+                  Variability:</label
+                >
+              </td>
+              <td>
+                <input
+                  type="text"
+                  id="percentage_of_time_with_abnormal_long_term_variability"
+                  name="percentage_of_time_with_abnormal_long_term_variability"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="mean_value_of_long_term_variability"
+                  >Mean Value of Long Term Variability:</label
+                >
+              </td>
+              <td>
+                <input
+                  type="text"
+                  id="mean_value_of_long_term_variability"
+                  name="mean_value_of_long_term_variability"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td><label for="histogram_width">Histogram Width:</label></td>
+              <td>
+                <input
+                  type="text"
+                  id="histogram_width"
+                  name="histogram_width"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td><label for="histogram_min">Histogram Min:</label></td>
+              <td>
+                <input
+                  type="text"
+                  id="histogram_min"
+                  name="histogram_min"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td><label for="histogram_max">Histogram Max:</label></td>
+              <td>
+                <input
+                  type="text"
+                  id="histogram_max"
+                  name="histogram_max"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="histogram_number_of_peaks"
+                  >Histogram Number of Peaks:</label
+                >
+              </td>
+              <td>
+                <input
+                  type="text"
+                  id="histogram_number_of_peaks"
+                  name="histogram_number_of_peaks"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="histogram_number_of_zeroes"
+                  >Histogram Number of Zeroes:</label
+                >
+              </td>
+              <td>
+                <input
+                  type="text"
+                  id="histogram_number_of_zeroes"
+                  name="histogram_number_of_zeroes"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td><label for="histogram_mode">Histogram Mode:</label></td>
+              <td>
+                <input
+                  type="text"
+                  id="histogram_mode"
+                  name="histogram_mode"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td><label for="histogram_mean">Histogram Mean:</label></td>
+              <td>
+                <input
+                  type="text"
+                  id="histogram_mean"
+                  name="histogram_mean"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td><label for="histogram_median">Histogram Median:</label></td>
+              <td>
+                <input
+                  type="text"
+                  id="histogram_median"
+                  name="histogram_median"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="histogram_variance">Histogram Variance:</label>
+              </td>
+              <td>
+                <input
+                  type="text"
+                  id="histogram_variance"
+                  name="histogram_variance"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="histogram_tendency">Histogram Tendency:</label>
+              </td>
+              <td>
+                <input
+                  type="text"
+                  id="histogram_tendency"
+                  name="histogram_tendency"
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input type="submit" value="Predict" id="submit-button" />
+              </td>
+            </tr>
+          </table>
+        </form>
+      </div>
+    </div>
+  </body>
+  <script>
+    const text = "Believe In Us...!";
+const container = document.querySelector(".typing-container");
+
+function typeText(index) {
+  if (index < text.length) {
+    container.textContent += text.charAt(index);
+    setTimeout(() => {
+      typeText(index + 1);
+    }, 100); // Adjust speed (milliseconds)
+  } else {
+    setTimeout(() => {
+      container.textContent = ""; // Clear the text
+      typeText(0); // Restart animation
+    }, 1000); // Adjust the delay between animations (milliseconds)
+  }
+}
+
+typeText(0);
+
+  </script>
+</html>
